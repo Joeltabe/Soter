@@ -1,25 +1,18 @@
+export type AidPackageStatus = 'Active' | 'Claimed' | 'Expired';
+export type TokenType = 'USDC' | 'XLM' | 'EURC';
+
 export interface AidPackage {
   id: string;
-  name?: string;
-  title?: string;
+  title: string;
   region: string;
   amount: string;
   recipients: number;
-  status: 'Active' | 'Pending' | 'Upcoming' | 'delivered' | 'cancelled' | 'pending';
+  status: AidPackageStatus;
+  token: TokenType;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-
-export interface GlobalStats {
-  packagesFunded: number;
-  totalDistributed: string;
-  recipientsReached: number;
+export interface AidPackageFilters {
+  search?: string;
+  status?: AidPackageStatus | '';
+  token?: TokenType | '';
 }
