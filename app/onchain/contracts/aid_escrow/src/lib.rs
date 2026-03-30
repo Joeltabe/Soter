@@ -995,7 +995,7 @@ impl AidEscrow {
 mod tests {
     use super::*;
     use soroban_sdk::testutils::{Address as _, MockAuth, MockAuthInvoke};
-    use soroban_sdk::{testutils::Ledger, Env};
+    use soroban_sdk::{Env, testutils::Ledger};
 
     fn setup() -> (Env, AidEscrowClient<'static>) {
         let env = Env::default();
