@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Bell, X, ExternalLink, RefreshCw, CheckCircle, XCircle, Clock, AlertCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useFormatter } from '@/hooks/useFormatter';
 import { useActivityStore } from '@/lib/activityStore';
 import type { ActivityStatus } from '@/types/activity';
 
@@ -23,6 +24,7 @@ const statusColors: Record<ActivityStatus, string> = {
 export function ActivityCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations();
+  const { formatDateTime, formatRelativeTimeValue } = useFormatter();
   const { activities, removeActivity, clearCompleted, updateActivity } = useActivityStore();
 
   const pendingCount = activities.filter(a => a.status === 'pending' || a.status === 'processing').length;
@@ -142,7 +144,10 @@ export function ActivityCenter() {
 
                           <div className="flex items-center justify-between mt-2">
                             <span className="text-xs text-slate-500 dark:text-slate-400">
-                              {activity.timestamp.toLocaleString()}
+                              {(() => {
+                                const { key, count } = formatRelativeTimeValue(activity.timestamp);
+                                return count > 0 ? t(key, { count }) : t(key);
+                              })()}
                             </span>
                             <div className="flex items-center gap-2">
                               {activity.retryAction && activity.status === 'failed' && (
