@@ -10,11 +10,30 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../theme/ThemeContext';
 import { AppColors } from '../theme/useAppTheme';
 import { useBiometric } from '../contexts/BiometricContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 export const SettingsScreen: React.FC = () => {
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const { biometricEnabled, biometricSupported, toggleBiometric } = useBiometric();
+  const { permissionGranted, requestPermission } = useNotification();
+
+  const handleNotificationToggle = async (value: boolean) => {
+    if (value) {
+      const granted = await requestPermission();
+      if (!granted) {
+        Alert.alert(
+          'Permission Denied',
+          'Push notifications could not be enabled. Please check your device settings.',
+        );
+      }
+    } else {
+      Alert.alert(
+        'Disable Notifications',
+        'To disable push notifications, please turn them off in your device settings for Soter.',
+      );
+    }
+  };
 
   const handleToggle = async (value: boolean) => {
     if (value && !biometricSupported) {
@@ -82,6 +101,39 @@ export const SettingsScreen: React.FC = () => {
             Biometrics are not available or not enrolled on this device.
           </Text>
         )}
+
+        <Text
+          style={styles.sectionHeader}
+          accessibilityRole="header"
+        >
+          Notifications
+        </Text>
+
+        <View
+          style={styles.row}
+          accessible
+          accessibilityRole="switch"
+          accessibilityLabel="Push Notifications"
+          accessibilityHint="Receive push notifications for claim and verification updates"
+          accessibilityValue={{ text: permissionGranted ? 'on' : 'off' }}
+          accessibilityState={{ checked: permissionGranted }}
+          onAccessibilityTap={() => void handleNotificationToggle(!permissionGranted)}
+        >
+          <View style={styles.rowText}>
+            <Text style={styles.rowTitle}>Push Notifications</Text>
+            <Text style={styles.rowSubtitle}>
+              Receive updates for claim and verification status changes
+            </Text>
+          </View>
+          <Switch
+            value={permissionGranted}
+            onValueChange={handleNotificationToggle}
+            trackColor={{ false: colors.border, true: colors.brand.primary }}
+            thumbColor="#FFFFFF"
+            importantForAccessibility="no-hide-descendants"
+            accessibilityElementsHidden
+          />
+        </View>
       </View>
     </SafeAreaView>
   );

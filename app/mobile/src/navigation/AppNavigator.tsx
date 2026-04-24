@@ -5,6 +5,7 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { HealthScreen } from '../screens/HealthScreen';
 import { AidOverviewScreen } from '../screens/AidOverviewScreen';
 import { AidDetailsScreen } from '../screens/AidDetailsScreen';
+import { ClaimReceiptScreen } from '../screens/ClaimReceiptScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { ScannerScreen } from '../screens/ScannerScreen';
 
@@ -41,6 +42,11 @@ export const AppNavigator = () => {
         name="Scanner"
         component={ScannerScreen}
         options={{ title: 'Scan QR Code', presentation: 'modal' }}
+      />
+      <Stack.Screen
+        name="ClaimReceipt"
+        component={ClaimReceiptScreen}
+        options={{ title: 'Claim Receipt' }}
       />
       <Stack.Screen
         name="Settings"
